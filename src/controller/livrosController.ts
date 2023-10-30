@@ -12,9 +12,46 @@ async function get(req: Request, res: Response) {
 
   const livros = await Model.find(filter)
 
-  res.json(livros)
+  const message: string = livros ? 'success' : 'error'
+  
+  res.json({
+    message,
+    livros
+  })
+
+}
+
+async function post(req: Request, res: Response) {
+  const {
+    titulo,
+    autor ,
+    outrosAutores,
+    edicao,
+    publicacao,
+    paginas,
+    isbn,
+    assuntos
+  } = req.body
+
+  const livro = new Model({
+    titulo,
+    autor,
+    outrosAutores,
+    edicao,
+    publicacao,
+    paginas,
+    isbn,
+    assuntos
+  })
+    
+  livro.save()
+
+  res.send({
+    livro
+  }) 
 }
 
 export default {
-  get
+  get,
+  post
 }
