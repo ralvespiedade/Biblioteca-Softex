@@ -3,11 +3,10 @@
 import Model from '../model/livro'
 import { Request, Response } from 'express';
 
-//Creating a method for the GET verb.
+//Creating method for the GET verb.
 async function get(req: Request, res: Response) {
   const { id } = req.params
 
-  //Talvez isso falhe, preciso testar
   const filter = id ? { _id: id } : {};
 
   const livros = await Model.find(filter)
@@ -46,12 +45,48 @@ async function post(req: Request, res: Response) {
     
   livro.save()
 
+const message: string = livro ? 'success' : 'error'
+
   res.send({
-    livro
+    livro,
+    message
   }) 
 }
 
+async function put(req: Request, res: Response) {
+  //vou pegar o id do req.param
+  const { id } = req.params
+ 
+  //fazer uma consulta pelo metodo Model.find(_id: id)
+  const livro = await Model.findOneAndUpdate({ _id: id }, req.body, { new: true })
+  
+  const message: string = livro ? 'success' : 'error'
+
+  res.send({
+    message,
+    livro
+  })
+    
+}
+
+async function del(req: Request, res: Response) {
+  const { id } = req.params
+  
+  const livro = await Model.findOneAndDelete({_id: id})
+
+  const message = livro ? "success" : "error"
+  
+  res.send({
+    message,
+    livro
+  })
+}
+    
+
 export default {
   get,
-  post
+  post,
+  put,
+  del
 }
+
